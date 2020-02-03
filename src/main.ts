@@ -2,12 +2,12 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as config from "config"
-import { getConnection } from "typeorm";
 
 async function bootstrap() {
   const serverConfig = config.get("server");
   const port = process.env.SERVER_PORT || serverConfig.port;
   const app = await NestFactory.create(AppModule);
+  //app.setGlobalPrefix("mgmt/v1");
 
   const options = new DocumentBuilder()
     .setTitle('Student-Management-System-API')

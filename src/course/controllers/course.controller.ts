@@ -8,6 +8,7 @@ import { AssignmentDto } from '../../shared/dto/assignment.dto';
 import { AssignmentService } from "../services/assignment.service";
 import { AssessmentDto } from "../../shared/dto/assessment.dto";
 import { AssessmentService } from "../services/assessment.service";
+import { UserDto } from "../../shared/dto/user.dto";
 
 @ApiTags("courses") 
 @Controller("courses")
@@ -36,6 +37,7 @@ export class CourseController {
 			@Param("userId", ParseUUIDPipe) userId: string): Promise<any> {
 		return this.courseService.addUser(id, userId);
 	}
+	
 
 	@Post(":id/assignments")
 	createAssignment(
@@ -66,13 +68,9 @@ export class CourseController {
 		return this.courseService.getCourseById(id);
 	}
 
-	@Get(":name/:semester")
-	getCourseByNameAndSemester(
-		@Param("name") name: string,
-		@Param("semester") semester: string
-	): Promise<CourseDto> {
-
-		return this.courseService.getCourseByNameAndSemester(name, semester);
+	@Get(":id/users")
+	getUsersOfCourse(@Param("id") id: string): Promise<UserDto[]> {
+		return this.courseService.getUsersOfCourse(id);
 	}
 
 	@Get(":id/groups")
@@ -101,6 +99,15 @@ export class CourseController {
 		return this.assessmentService.getAssessmentsForAssignment(assignmentId);
 	}
 
+	@Get(":name/:semester")
+	getCourseByNameAndSemester(
+		@Param("name") name: string,
+		@Param("semester") semester: string
+	): Promise<CourseDto> {
+
+		return this.courseService.getCourseByNameAndSemester(name, semester);
+	}
+
 	@Patch(":id")
 	updateCourse(
 		@Param("id") id: string,
@@ -117,7 +124,5 @@ export class CourseController {
 
 		return this.courseService.deleteCourse(id);
 	}
-
-
 
 }

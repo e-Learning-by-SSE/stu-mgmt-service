@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { CourseDto } from 'src/shared/dto/course.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CourseRepository } from '../repositories/course.repository';
@@ -8,6 +8,7 @@ import { UserRepository } from '../../user/repositories/user.repository';
 import { CourseUserRelation } from '../../shared/entities/course-user-relation.entity';
 import { CourseUserRelationRepository } from '../repositories/course-user-relation.repository';
 import * as fromDtoFactory from "../../shared/dto-factory";
+import { UserDto } from "../../shared/dto/user.dto";
 
 @Injectable()
 export class CourseService {
@@ -42,6 +43,15 @@ export class CourseService {
         const course = await this.courseRepository.getCourseByNameAndSemester(name, semester);
         const courseDto = fromDtoFactory.createCourseDto(course);
         return courseDto;
+    }
+
+    async getUsersOfCourse(courseId: string): Promise<UserDto[]> {
+        const course = await this.courseRepository.getCourseWithUsers(courseId);
+        const userDtos: UserDto[] = [];
+        course.courseUserRelations.forEach(courseUserRelation => {
+            userDtos.push(fromDtoFactory.createUserDto(courseUserRelation.user));
+        });
+        return userDtos;
     }
 
     async updateCourse(courseId: string, courseDto: CourseDto): Promise<CourseDto> {

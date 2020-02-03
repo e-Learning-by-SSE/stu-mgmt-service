@@ -32,13 +32,12 @@ export class UserController {
         return this.userService.getCoursesOfUser(id);
     }
 
-    @Get(":id/courses/:courseName/:semester/groups")
+    @Get(":id/courses/:courseId/groups")
     getGroupOfUserForCourse(
         @Param("id", ParseUUIDPipe) id: string,
-        @Param("courseName") courseName: string,
-        @Param("semester") semester: string
+        @Param("courseId", ParseUUIDPipe) courseId: string,
     ): Promise<GroupDto> {
 
-        return this.userService.getGroupOfUserForCourse(id, courseName, semester);
+        return this.userService.getGroupOfUserForCourse(id, courseId);
     }
 }

@@ -1,4 +1,4 @@
-import { Repository, EntityRepository } from "typeorm";
+import { Repository, EntityRepository, QueryBuilder } from "typeorm";
 import { Group } from "../../shared/entities/group.entity";
 import { GroupDto } from "../../shared/dto/group.dto";
 import { Course } from "../../shared/entities/course.entity";
@@ -40,7 +40,8 @@ export class GroupRepository extends Repository<Group> {
 	}
 
 	async getGroupOfUserForCourse(courseId: string, userId: string): Promise<any> {
-		throw new Error("Not implemented");
+		const repo = new Repository<UserGroupRelation>();
+		throw new Error("NYE");
 	}
 
 }

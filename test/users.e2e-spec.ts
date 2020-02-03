@@ -3,20 +3,9 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { getConnection } from 'typeorm';
-import { UserDto } from '../src/shared/dto/user.dto';
+import { UsersMock } from "./mocks/dto-mocks";
 
-const users: UserDto[] = [
-	{
-		id: "",
-		email: "user.one@test.com",
-		role: "student"
-	},
-	{
-		id: "",
-		email: "user.two@test.com",
-		role: "student"
-	}
-];
+const users = UsersMock;
 
 describe('UserController (e2e)', () => {
 	let app: INestApplication;
@@ -31,7 +20,7 @@ describe('UserController (e2e)', () => {
 	});
 
 	afterAll(async () => {
-		await getConnection().synchronize(true); // Drop database with all tables and data
+		await getConnection().dropDatabase(); // Drop database with all tables and data
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 

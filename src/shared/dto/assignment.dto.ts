@@ -1,11 +1,11 @@
 import { CourseDto } from "./course.dto";
 
 export class AssignmentDto {
-	id: string;
+	id?: string;
 	courseId: string;
 	name: string;
-	comment: string;
-	link: string;
 	type: string;
 	maxPoints: number;
+	comment?: string;
+	link?: string;
 }

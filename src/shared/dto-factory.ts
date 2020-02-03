@@ -51,9 +51,10 @@ export function createUserDto(userEntity: User): UserDto {
 export function createGroupDto(groupEntity: Group): GroupDto {
     const groupDto: GroupDto = {
         id: groupEntity.id,
+        courseId: groupEntity.courseId,
         name: groupEntity.name,
         isClosed:groupEntity.isClosed,
-        course: groupEntity.course
+        course: groupEntity.course // TODO: should be transformed to dto
     }
     return groupDto;
 }

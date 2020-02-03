@@ -41,10 +41,9 @@ export class UserService {
         return courseDtos;
     }
 
-    async getGroupOfUserForCourse(userId: string, courseName: string, semester: string): Promise<GroupDto> {
-        const group = await this.groupRepository.getGroupOfUserForCourse(courseName + "-" + semester, userId); // TODO: Refactor
-        console.log(group);
-        return null;
+    async getGroupOfUserForCourse(userId: string, courseId: string): Promise<GroupDto> {
+        const group = await this.groupRepository.getGroupOfUserForCourse(courseId, userId);
+        return fromDtoFactory.createGroupDto(group);
     }
     
 }

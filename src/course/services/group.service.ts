@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, BadRequestException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { GroupRepository } from "../repositories/group.repository";
 import { CourseRepository } from "../repositories/course.repository";
