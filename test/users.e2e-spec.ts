@@ -3,20 +3,73 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { getConnection } from 'typeorm';
-import { UsersMock } from "./mocks/dto-mocks";
+import { CourseDto } from "../src/shared/dto/course.dto";
+import { GroupDto } from "../src/shared/dto/group.dto";
+import { AssignmentDto } from "../src/shared/dto/assignment.dto";
+import { AssessmentDto } from "../src/shared/dto/assessment.dto";
+import { DbMockService } from "./mocks/db-mock.service";
+import { UserDto } from "../src/shared/dto/user.dto";
 
-const users = UsersMock;
+let users: UserDto[];
+let courses: CourseDto[];
+let groups: GroupDto[];
+let assignments: AssignmentDto[];
+let assessments: AssessmentDto[];
 
-describe('UserController (e2e)', () => {
+describe('GET-REQUESTS of UserController (e2e)', () => {
 	let app: INestApplication;
 	
-	beforeEach(async () => {
+	beforeAll(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({
 			imports: [AppModule],
 		}).compile();
 
 		app = moduleFixture.createNestApplication();
 		await app.init();
+
+		// Setup mocks
+		const dbMockService = new DbMockService(getConnection());
+		courses = dbMockService.courses;
+		users = dbMockService.users;
+		groups = dbMockService.groups;
+		assignments = dbMockService.assignments;
+		assessments = dbMockService.assessments;
+		await dbMockService.createAll();
+	});
+
+	afterAll(async () => {
+		await getConnection().dropDatabase(); // Drop database with all tables and data
+		await getConnection().close(); // Close Db-Connection after all tests have been executed
+	});
+
+	it("(GET) /users Retrieves all users", () => {
+		return request(app.getHttpServer())
+			.get("/users")
+			.expect(({ body }) => {
+				expect(body.length).toEqual(users.length);
+			});
+	});
+
+});
+
+describe('POST-REQUESTS of UserController (e2e)', () => {
+	let app: INestApplication;
+	
+	beforeAll(async () => {
+		const moduleFixture: TestingModule = await Test.createTestingModule({
+			imports: [AppModule],
+		}).compile();
+
+		app = moduleFixture.createNestApplication();
+		await app.init();
+
+		// Setup mocks
+		const dbMockService = new DbMockService(getConnection());
+		courses = dbMockService.courses;
+		users = dbMockService.users;
+		groups = dbMockService.groups;
+		assignments = dbMockService.assignments;
+		assessments = dbMockService.assessments;
 	});
 
 	afterAll(async () => {
@@ -34,22 +87,4 @@ describe('UserController (e2e)', () => {
 			})
 	});
 	
-	it("(POST) /users Creates the given user returns it (Part 2/2)", () => {
-		return request(app.getHttpServer())
-		.post("/users")
-		.send(users[1])
-		.expect(201)
-		.expect(({ body }) => {
-			expect(body.email).toEqual(users[1].email);
-		})
-	});
-
-	it("(GET) /users Retrieves all users", () => {
-		return request(app.getHttpServer())
-			.get("/users")
-			.expect(({ body }) => {
-				expect(body.length).toEqual(users.length);
-			});
-	});
-
 });
