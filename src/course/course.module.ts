@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, HttpModule } from '@nestjs/common';
 import { CourseController } from './controllers/course.controller';
 import { CourseService } from './services/course.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -15,6 +15,7 @@ import { AssessmentRepository } from "./database/repositories/assessment.reposit
 import { AssessmentUserRelationRepository } from "./database/repositories/assessment-user-relation.repository";
 import { AssessmentController } from './controllers/assessment.controller';
 import { AssignmentController } from './controllers/assignment.controller';
+import { UpdateService } from "./database/subscribers/update.service";
 
 @Module({
   imports: [TypeOrmModule.forFeature([
@@ -25,8 +26,10 @@ import { AssignmentController } from './controllers/assignment.controller';
     AssignmentRepository, 
     AssessmentRepository,
     AssessmentUserRelationRepository
-  ])],
+  ]),
+    HttpModule
+  ],
   controllers: [AssessmentController, AssignmentController, CourseController, GroupController],
-  providers: [CourseService, GroupService, AssignmentService, AssessmentService]
+  providers: [CourseService, GroupService, AssignmentService, AssessmentService, { provide: UpdateService, useClass: UpdateService }]
 })
 export class CourseModule {}

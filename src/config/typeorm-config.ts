@@ -8,7 +8,9 @@ import { UserGroupRelation } from '../shared/entities/user-group-relation.entity
 import { Assignment } from '../shared/entities/assignment.entity';
 import { Assessment } from "../shared/entities/assessment.entity";
 import { AssessmentUserRelation } from "../shared/entities/assessment-user-relation.entity";
-import { CourseUserRelationSubscriber, UserGroupRelationSubscriber } from '../course/database/subscribers/subscribers';
+import { AssignmentSubscriber } from "../course/database/subscribers/assignment.subscriber";
+import { UserGroupRelationSubscriber } from "../course/database/subscribers/user-group.subscriber";
+import { CourseUserRelationSubscriber } from "../course/database/subscribers/course-user.subscriber";
 
 const dbConfig = config.get("db");
 
@@ -23,5 +25,5 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   dropSchema: dbConfig.dropSchema || false,
   keepConnectionAlive: true, // prevents AlreadyHasActiveConnectionError, needed for testing // TODO: Check if it should be disabled in production
   entities: [Course, User, Group, CourseUserRelation, UserGroupRelation, Assignment, Assessment, AssessmentUserRelation],
-  subscribers: [CourseUserRelationSubscriber, UserGroupRelationSubscriber]
+  subscribers: [CourseUserRelationSubscriber, UserGroupRelationSubscriber, AssignmentSubscriber],
 };
