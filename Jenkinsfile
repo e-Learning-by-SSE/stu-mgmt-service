@@ -149,17 +149,16 @@ pipeline {
                 build job: 'Teaching_StudentMgmt-API-Client', parameters: [string(name: 'API', value: 'STU-MGMT')], wait: false
             }
         }
-        
-        post {
-          always {
-               // Send e-mails if build becomes unstable/fails or returns stable
-               // Based on: https://stackoverflow.com/a/39178479
-               load "$JENKINS_HOME/.envvars/emails.groovy"
-               step([$class: 'Mailer', recipients: "${env.elsharkawy}, ${env.klingebiel}", notifyEveryUnstableBuild: true, sendToIndividuals: false])
+    }
+    post {
+        always {
+            // Send e-mails if build becomes unstable/fails or returns stable
+            // Based on: https://stackoverflow.com/a/39178479
+            load "$JENKINS_HOME/.envvars/emails.groovy"
+            step([$class: 'Mailer', recipients: "${env.elsharkawy}, ${env.klingebiel}", notifyEveryUnstableBuild: true, sendToIndividuals: false])
 
-               // Report static analyses
-               recordIssues enabledForFailure: false, tool: checkStyle(pattern: 'output/eslint/eslint.xml')
-          }
+            // Report static analyses
+            recordIssues enabledForFailure: false, tool: checkStyle(pattern: 'output/eslint/eslint.xml')
         }
     }
 }
