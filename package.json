@@ -23,7 +23,7 @@
 		"test:debug": "env NODE_ENV=testing node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand --config ./test/jest-unit.json",
 		"test:e2e": "env NODE_ENV=testing env TZ='Europe/Berlin' jest --runInBand --config ./test/jest-e2e.json",
 		"test:e2ecov": "env NODE_ENV=testing env TZ='Europe/Berlin' jest --runInBand --config ./test/jest-e2e.json --coverage",
-		"test:jenkins": "env NODE_ENV=testing env TZ='Europe/Berlin' env JEST_JUNIT_OUTPUT_FILE=output/test/junit.xml jest --ci --reporters=default --reporters=jest-junit --runInBand --coverage --coverageDirectory=output/test/coverage --config ./test/jest-ci.json",
+		"test:jenkins": "env NODE_ENV=testing env DB_HOST=db env DB_PORT=5432 env TZ='Europe/Berlin' env JEST_JUNIT_OUTPUT_FILE=output/test/junit.xml jest --ci --reporters=default --reporters=jest-junit --runInBand --coverage --coverageDirectory=output/test/coverage --config ./test/jest-ci.json",
 		"test:github": "env NODE_ENV=testing env TZ='Europe/Berlin' jest --ci --reporters=default --reporters=jest-github-actions-reporter --runInBand --config ./test/jest-ci.json",
 		"typeorm": "env NODE_ENV=production node --require ts-node/register ./node_modules/typeorm/cli.js"
 	},
