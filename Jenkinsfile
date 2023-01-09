@@ -1,7 +1,9 @@
 def dockerImage
 
 pipeline {
-    agent none
+    agent {
+        label 'docker' 
+    }
 
     environment {
         DEMO_SERVER = '147.172.178.30'
@@ -45,9 +47,6 @@ pipeline {
         stage('Prepare parallel Docker builds') {
             parallel {
                 stage('Test') {
-                    agent {
-                        label 'docker'
-                    }
                     environment {
                         POSTGRES_DB = 'StudentMgmtDb'
                         POSTGRES_USER = 'postgres'
@@ -83,9 +82,6 @@ pipeline {
                 }
 
                 stage('Build Docker Image') {
-                    agent {
-                        label 'docker'
-                    }
                     steps {
                         // Use build Dockerfile instead of Test-DB Dockerfile to build image
                         sh 'cp -f docker/Dockerfile Dockerfile'
@@ -98,8 +94,10 @@ pipeline {
         }
         
         stage('Publish Results and Image') {
-            agent {
-                label 'docker'
+            environment {
+                // env for the docker-compose
+                AUTH_ISSUER_URI = " https://staging.sse.uni-hildesheim.de:8443/realms/test-ldap-realm"
+                AUTH_JWKS_URL = "https://staging.sse.uni-hildesheim.de:8443/realms/test-ldap-realm/protocol/openid-connect/certs"
             }
             steps {
                 archiveArtifacts artifacts: '*.tar.gz'
@@ -107,7 +105,6 @@ pipeline {
                 sh "docker compose up -d"
                 sh "wget http://localhost:3000/${env.API_FILE}"
                 archiveArtifacts artifacts: "${env.API_FILE}"
-                sh "docker compose down"
                 script {
                     // https://stackoverflow.com/a/16817748
                     env.API_VERSION = sh(returnStdout: true, script: 'grep -Po \'(?<=export const VERSION = ")[^";]+\' src/version.ts').trim()
@@ -118,12 +115,14 @@ pipeline {
                     }
                 }
             }
+            post {
+                always {
+                    sh 'docker compose down'
+                }
+            } 
         }
         
         stage('Deploy') {
-            agent {
-                label 'docker'
-            }
             failFast true
             steps {
                 sshagent(['STM-SSH-DEMO']) {
@@ -152,13 +151,16 @@ pipeline {
     }
     post {
         always {
+            echo "disabled mail post action"
+        
             // Send e-mails if build becomes unstable/fails or returns stable
             // Based on: https://stackoverflow.com/a/39178479
-            load "$JENKINS_HOME/.envvars/emails.groovy"
-            step([$class: 'Mailer', recipients: "${env.elsharkawy}, ${env.klingebiel}", notifyEveryUnstableBuild: true, sendToIndividuals: false])
+            //load "$JENKINS_HOME/.envvars/emails.groovy"
+            //step([$class: 'Mailer', recipients: "${env.elsharkawy}, ${env.klingebiel}", notifyEveryUnstableBuild: true, sendToIndividuals: false])
 
             // Report static analyses
-            recordIssues enabledForFailure: false, tool: checkStyle(pattern: 'output/eslint/eslint.xml')
+            //recordIssues enabledForFailure: false, tool: checkStyle(pattern: 'output/eslint/eslint.xml')
         }
     }
 }
+
