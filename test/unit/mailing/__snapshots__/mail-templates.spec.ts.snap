@@ -54,7 +54,7 @@ Mail {
     "ex@mple.email",
   ],
   "from": "no-reply@student-mgmt-system",
-  "html": "<div><h2>java-wise1920 – Neue Aufgabe</h2><p>Die Aufgabe \\"Homework 01\\" kann jetzt bearbeitet werden.</p><p>Die Bearbeitungszeit endet am 5/20/2022, 12:00:00 AM.</p><br /><p>Viel Erfolg!</p></div>",
+  "html": "<div><h2>java-wise1920 – Neue Aufgabe</h2><p>Die Aufgabe \\"Homework 01\\" kann jetzt bearbeitet werden.</p><p>Die Bearbeitungszeit endet am 5/20/2022, 12:00:00 AM.</p><br /><p>Viel Erfolg!</p></div>",
   "subject": "java-wise1920 – Neue Aufgabe: Homework 01",
   "text": "Aufgabe \\"Homework 01\\" kann jetzt bearbeitet werden.",
 }
@@ -66,7 +66,7 @@ Mail {
     "ex@mple.email",
   ],
   "from": "no-reply@student-mgmt-system",
-  "html": "<div><h2>java-wise1920 – New assignment</h2><p>The assignment \\"Homework 01\\" is now available.</p><p>Submissions can be turned in until 5/20/2022, 12:00:00 AM.</p><br /><p>Good luck!</p></div>",
+  "html": "<div><h2>java-wise1920 – New assignment</h2><p>The assignment \\"Homework 01\\" is now available.</p><p>Submissions can be turned in until 5/20/2022, 12:00:00 AM.</p><br /><p>Good luck!</p></div>",
   "subject": "java-wise1920 – New Assignment: Homework 01",
   "text": "The assignment \\"Homework 01\\" is now available.",
 }
