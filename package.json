@@ -39,7 +39,7 @@
 		"@nestjs/typeorm": "^8.0.2",
 		"bcryptjs": "^2.4.3",
 		"class-transformer": "^0.4.0",
-		"class-validator": "^0.13.1",
+		"class-validator": "^0.14.0",
 		"config": "^3.3.6",
 		"cron": "^1.8.2",
 		"dayjs": "^1.11.0",
