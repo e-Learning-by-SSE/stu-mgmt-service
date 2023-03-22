@@ -7,7 +7,7 @@
 	"scripts": {
 		"prebuild": "rimraf dist",
 		"build": "nest build",
-		"start:dev": "env NODE_ENV=development nest start --watch",
+		"start:dev": "cross-env NODE_ENV=development nest start --watch",
 		"start:debug": "env NODE_ENV=development nest start --debug --watch",
 		"start:demo": "env NODE_ENV=demo nest start",
 		"start:main": "env NODE_ENV=demo node dist/src/main",
@@ -79,6 +79,7 @@
 		"@types/supertest": "^2.0.11",
 		"@typescript-eslint/eslint-plugin": "^4.31.1",
 		"@typescript-eslint/parser": "^4.31.1",
+		"cross-env": "^7.0.3",
 		"eslint": "^7.32.0",
 		"jest": "^27.2.0",
 		"jest-github-actions-reporter": "^1.0.3",
