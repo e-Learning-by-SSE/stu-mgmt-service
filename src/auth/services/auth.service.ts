@@ -10,6 +10,7 @@ type AuthInfo = {
 	username: string;
 	preferredUsername: string;
 	email: string;
+	role: UserRole;
 };
 
 @Injectable()
@@ -68,13 +69,14 @@ export class AuthService {
 		const displayName =
 			authInfo.preferredUsername?.length > 0 ? authInfo.preferredUsername : authInfo.username;
 		const email = authInfo.email;
+		const role = authInfo.role;
 
 		return this.userRepository.createUser({
 			id: undefined,
 			username,
 			displayName,
 			email,
-			role: UserRole.USER
+			role
 		});
 	}
 }

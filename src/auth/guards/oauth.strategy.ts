@@ -1,6 +1,7 @@
 import { ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { expressjwt, GetVerificationKey } from "express-jwt";
 import { expressJwtSecret } from "jwks-rsa";
+import { UserRole } from "src/shared/enums";
 import { promisify } from "util";
 import { Config } from "../../.config/config";
 import { environment } from "../../.config/environment";
@@ -35,12 +36,13 @@ export class OAuthStrategy extends AuthStrategy {
 		try {
 			await this.checkJwt(request, response);
 
-			// console.log(request.auth); // Uncomment to inspect decoded token
+			//console.log(request.auth); // Uncomment to inspect decoded token
 
 			const user = await this.authService.getOrCreateUser({
 				username: request.auth.sub,
 				preferredUsername: request.auth.preferred_username,
-				email: request.auth.email
+				email: request.auth.email,
+				role: request.auth.realm_access.roles.includes("stumgmt_admin") ? UserRole.MGMT_ADMIN : UserRole.USER
 			});
 
 			request.user = user;
