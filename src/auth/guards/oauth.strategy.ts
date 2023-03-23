@@ -1,7 +1,7 @@
 import { ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { expressjwt, GetVerificationKey } from "express-jwt";
 import { expressJwtSecret } from "jwks-rsa";
-import { UserRole } from "src/shared/enums";
+import { UserRole } from "../../shared/enums";
 import { promisify } from "util";
 import { Config } from "../../.config/config";
 import { environment } from "../../.config/environment";
