@@ -1,7 +1,9 @@
 pipeline {
-    agent any
-
-    tools {nodejs "NodeJS 16.13"}
+    agent {
+		docker {
+			image 'node:20-alpine'
+		}
+	}
 
     options {
         ansiColor('xterm')
