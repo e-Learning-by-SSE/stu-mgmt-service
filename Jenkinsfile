@@ -1,8 +1,6 @@
 pipeline {
     agent any
 
-	tools { nodejs "NodeJS 20" }
-
     options {
         ansiColor('xterm')
     }
@@ -12,6 +10,8 @@ pipeline {
         DEMO_SERVER_PORT = '3000'
         API_FILE = 'api-json'
         API_URL = "http://${env.DEMO_SERVER}:${env.DEMO_SERVER_PORT}/${env.API_FILE}"
+		// use node tool without triggering automatic npm installer
+		PATH = "/var/lib/jenkins/tools/jenkins.plugins.nodejs.tools.NodeJSInstallation/NodeJS_16.13/bin:${env.PATH}"
     }
 
     stages {
