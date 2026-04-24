@@ -96,8 +96,8 @@ pipeline {
                         # [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
                         # ssh-keyscan -t rsa,dsa example.com >> ~/.ssh/known_hosts
                         ssh -i ~/.ssh/id_rsa_student_mgmt_backend elscha@${env.DEMO_SERVER} <<EOF
-                            cd /staging/qualityplus-student-management-system
-                            ./recreate.sh
+                            cd /staging
+                            ./update-compose-project.sh qualityplus-student-management-system
                             exit
                         EOF"""
                 }
@@ -143,7 +143,7 @@ pipeline {
              // Send e-mails if build becomes unstable/fails or returns stable
              // Based on: https://stackoverflow.com/a/39178479
              load "$JENKINS_HOME/.envvars/emails.groovy"
-             step([$class: 'Mailer', recipients: "${env.elsharkawy}, ${env.klingebiel}", notifyEveryUnstableBuild: true, sendToIndividuals: false])
+             step([$class: 'Mailer', recipients: "${env.elsharkawy}", notifyEveryUnstableBuild: true, sendToIndividuals: false])
 
              // Report static analyses
              recordIssues enabledForFailure: false, tool: checkStyle(pattern: 'output/eslint/eslint.xml')
