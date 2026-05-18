@@ -7,7 +7,7 @@ pipeline {
 
     environment {
         DEMO_SERVER = '147.172.178.30'
-        DEMO_SERVER_PORT = '3000'
+        DEMO_SERVER_PORT = '9032'
         API_FILE = 'api-json'
         API_URL = "http://${env.DEMO_SERVER}:${env.DEMO_SERVER_PORT}/${env.API_FILE}"
 		// use node tool without triggering automatic npm installer
