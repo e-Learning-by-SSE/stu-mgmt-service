@@ -14,6 +14,8 @@ import { AssessmentRepository } from "../assessment/repositories/assessment.repo
 import { UserSettingsController } from "./controllers/user-settings.controller";
 import { UserSettings } from "./entities/user-settings.entity";
 import { UserSettingsService } from "./services/user-settings.service";
+import { CourseRepository } from "../course/repositories/course.repository";
+import { ParticipantRepository } from "../course/repositories/participant.repository";
 
 @Module({
 	imports: [
@@ -24,7 +26,9 @@ import { UserSettingsService } from "./services/user-settings.service";
 			GroupEventRepository,
 			AssignmentRepository,
 			AssignmentRegistrationRepository,
-			AssessmentRepository
+			AssessmentRepository,
+			CourseRepository,
+			ParticipantRepository
 		]),
 		AuthModule,
 		CourseModule

@@ -11,12 +11,15 @@ import { CourseId } from "../../course/entities/course.entity";
 import { Participant } from "../../course/models/participant.model";
 import { AssignmentRegistrationRepository } from "../../course/repositories/assignment-registration.repository";
 import { AssignmentRepository } from "../../course/repositories/assignment.repository";
+import { CourseRepository } from "../../course/repositories/course.repository";
 import { GroupEventRepository } from "../../course/repositories/group-event.repository";
 import { GroupRepository } from "../../course/repositories/group.repository";
+import { ParticipantRepository } from "../../course/repositories/participant.repository";
 import { DtoFactory } from "../../shared/dto-factory";
-import { UserDto, UserUpdateDto } from "../../shared/dto/user.dto";
+import { ImportResponseDto } from "../dto/import-response.dto";
+import { UserDto, UserUpdateDto, UserCreationDto } from "../../shared/dto/user.dto";
 import { UserId } from "../../shared/entities/user.entity";
-import { AssignmentState } from "../../shared/enums";
+import { AssignmentState, CourseRole, UserRole } from "../../shared/enums";
 import { AssignmentGroupTuple } from "../dto/assignment-group-tuple.dto";
 import { UserFilter } from "../dto/user.filter";
 import { UserRepository } from "../repositories/user.repository";
@@ -29,6 +32,8 @@ export class UserService {
 		@InjectRepository(AssignmentRepository) private assignmentRepository: AssignmentRepository,
 		@InjectRepository(AssessmentRepository) private assessmentRepository: AssessmentRepository,
 		@InjectRepository(GroupEventRepository) private groupEventRepository: GroupEventRepository,
+		@InjectRepository(CourseRepository) private courseRepo: CourseRepository,
+		@InjectRepository(ParticipantRepository) private participantRepo: ParticipantRepository,
 		@InjectRepository(AssignmentRegistrationRepository)
 		private registrations: AssignmentRegistrationRepository
 	) {}
@@ -159,5 +164,69 @@ export class UserService {
 
 	async deleteUser(userId: UserId): Promise<boolean> {
 		return this.userRepository.deleteUser(userId);
+	}
+
+	/**
+	 * Imports multiple students into the system. Must only be called by an administrator.
+	 * Existing users may be updated (matrNr, course memberships).
+	 * @param users The list of users to be imported/updated.
+	 * @returns An object containing the lists of successfully and unsuccessfully imported users.
+	 */
+	async importUsers(users: UserCreationDto[]): Promise<ImportResponseDto> {
+		const successfulImports: string[] = [];
+		const failedImports: string[] = [];
+
+		for (const user of users) {
+			try {
+				let existingUser = await this.userRepository.tryGetUserByUsername(user.username);
+
+				if (existingUser) {
+					// Update existing users
+					if (user.matrNr !== undefined && existingUser.matrNr == undefined) {
+						await this.userRepository.update(existingUser.id, { matrNr: user.matrNr });
+					}
+				} else {
+					// Create new users
+					existingUser = await this.userRepository.createUser({
+						id: undefined,
+						username: user.username,
+						email: user.email,
+						matrNr: user.matrNr,
+						displayName: user.displayName ?? user.username,
+						role: UserRole.USER
+					});
+				}
+
+				// Subscribe existing/new user to specified courses, if he isn't already member and course is not closed
+				if (user.courseIds && user.courseIds.length > 0) {
+					for (const courseId of user.courseIds) {
+						const course = await this.courseRepo.getCourseWithConfigAndGroupSettings(
+							courseId
+						);
+
+						const isAlreadyInCourse = await this.participantRepo.findOne({
+							where: {
+								courseId,
+								userId: existingUser.id
+							}
+						});
+
+						if (!course.isClosed && !isAlreadyInCourse) {
+							await this.participantRepo.createParticipant(
+								courseId,
+								existingUser.id,
+								CourseRole.STUDENT
+							);
+						}
+					}
+				}
+
+				successfulImports.push(user.username);
+			} catch (error) {
+				failedImports.push(user.username);
+			}
+		}
+
+		return { successfulImports: successfulImports, failedImports: failedImports };
 	}
 }

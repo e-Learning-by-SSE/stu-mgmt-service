@@ -32,6 +32,7 @@ import { UserId } from "../../shared/entities/user.entity";
 import { UserRole } from "../../shared/enums";
 import { PaginatedResult, throwIfRequestFailed } from "../../utils/http-utils";
 import { AssignmentGroupTuple } from "../dto/assignment-group-tuple.dto";
+import { ImportResponseDto } from "../dto/import-response.dto";
 import { UserFilter } from "../dto/user.filter";
 import { IdentityGuard } from "../guards/identity.guard";
 import { UserService } from "../services/user.service";
@@ -231,5 +232,17 @@ export class UserController {
 			this.userService.deleteUser(userId),
 			`Failed to delete user (${userId})`
 		);
+	}
+
+	@ApiOperation({
+		operationId: "import",
+		summary: "Bulk import of multiple users.",
+		description:
+			"Imports multiple users in bulk. Ingores existing users. Returns true if the import was successful."
+	})
+	@Post("import")
+	@Roles(UserRole.SYSTEM_ADMIN, UserRole.MGMT_ADMIN)
+	importUsers(@Body() users: UserDto[]): Promise<ImportResponseDto> {
+		return this.userService.importUsers(users);
 	}
 }

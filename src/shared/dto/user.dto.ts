@@ -19,3 +19,9 @@ export class UserDto {
 }
 
 export class UserUpdateDto extends OmitType(UserDto, ["id", "username", "courses"]) {}
+
+export class UserCreationDto extends OmitType(UserDto, ["id", "courses", "displayName", "role"]) {
+	displayName?: string;
+	role?: UserRole;
+	courseIds?: string[];
+}
