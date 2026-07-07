@@ -180,21 +180,20 @@ export class UserService {
 			try {
 				let existingUser = await this.userRepository.tryGetUserByUsername(user.username);
 
-				if (existingUser) {
-					// Update existing users
-					if (user.matrNr !== undefined && existingUser.matrNr == undefined) {
-						await this.userRepository.update(existingUser.id, { matrNr: user.matrNr });
-					}
-				} else {
+				if (!existingUser) {
 					// Create new users
 					existingUser = await this.userRepository.createUser({
 						id: undefined,
 						username: user.username,
 						email: user.email,
-						matrNr: user.matrNr,
 						displayName: user.displayName ?? user.username,
 						role: UserRole.USER
 					});
+				}
+
+				// Update matrikel number (of existing users, but also from new users (cannot be created in a single step))
+				if (user.matrNr !== undefined && existingUser.matrNr == undefined) {
+					await this.userRepository.update(existingUser.id, { matrNr: user.matrNr });
 				}
 
 				// Subscribe existing/new user to specified courses, if he isn't already member and course is not closed
